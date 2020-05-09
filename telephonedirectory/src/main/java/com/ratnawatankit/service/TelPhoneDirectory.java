@@ -3,7 +3,8 @@ package com.ratnawatankit.service;
 import com.fasterxml.jackson.databind.MappingIterator;
 import com.fasterxml.jackson.dataformat.csv.CsvMapper;
 import com.ratnawatankit.dto.Directory;
-import com.ratnawatankit.node.TrieNode;
+import com.ratnawatankit.dto.TrieNode;
+import com.ratnawatankit.utility.Constants;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -13,29 +14,40 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TelPhoneDirectory {
-    TrieNode root = new TrieNode();
-    List<Directory> list = null;
+    static TrieNode root = new TrieNode();
+    static List<Directory> list = null;
 
-    public TelPhoneDirectory() throws IOException {
-        initializeDirectory();
+    static {
+        try {
+            initializeDirectory();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
-    public void initializeDirectory() throws IOException {
-        InputStream inputFS = new FileInputStream(new File("directory.csv"));
-        MappingIterator<Directory> listItr = new CsvMapper().readerWithTypedSchemaFor(Directory.class).readValues(inputFS);
-        listItr.next();
-        this.list = listItr.readAll();
-        insertIntoTrie(list);
+    public static void initializeDirectory() throws IOException {
+        File file = new File(Constants.DIRECTORY_PATH);
+        if (!file.exists()) {
+            return;
+        }
+        try (InputStream inputFS = new FileInputStream(file)) {
+            MappingIterator<Directory> listItr = new CsvMapper().readerWithTypedSchemaFor(Directory.class).readValues(inputFS);
+            listItr.next();
+            list = listItr.readAll();
+            insertIntoTrie(list);
+        } catch (IOException e) {
+            throw new IOException("Some Problem occurs while initializing directory." + e.getMessage());
+        }
     }
 
-    public void insertIntoTrie(List<Directory> directoryList) {
+    public static void insertIntoTrie(List<Directory> directoryList) {
         int length = directoryList.size();
         for (int i = 0; i < length; i++) {
             insertContact(directoryList.get(i));
         }
     }
 
-    public void insertContact(Directory directory) {
+    public static void insertContact(Directory directory) {
         TrieNode temp = root;
         char[] ch = directory.getFullName().toLowerCase().toCharArray();
         for (int i = 0; i < ch.length; i++) {
@@ -45,7 +57,7 @@ public class TelPhoneDirectory {
                 temp.child.put(ch[i], dir);
             }
             temp = dir;
-            if (i == ch.length - 1) {
+            if (i == ch.length - 1) { //TODO
                 temp.isLast = true;
                 temp.companyName = directory.getCompanyName();
                 temp.phone = directory.getPhone();
