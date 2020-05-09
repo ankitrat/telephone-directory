@@ -191,11 +191,7 @@ public class AddressBook implements ActionListener {
         } else if (e.getSource() == jbnUpdate) {
             clear();
         } else if (e.getSource() == jbnSearch) {
-            try {
-                openSearchBox();
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
+            openSearchBox();
         } else if (e.getSource() == jbnForward) {
 
         } else if (e.getSource() == jbnBack) {
@@ -218,10 +214,10 @@ public class AddressBook implements ActionListener {
         jbnBack.setEnabled(true);
     }
 
-    public void openSearchBox() throws IOException {
+    public void openSearchBox() {
         JFrame frame = new JFrame();
         TelPhoneDirectory trie = new TelPhoneDirectory();
-        frame.getContentPane().add(new SearchBox(trie));
+        frame.getContentPane().add(new SearchBox(trie, jtfName, jtfPhone, jtfEmail, jtfCompany));
         frame.pack();
         frame.setLocationRelativeTo(jbnSearch);
         frame.setVisible(true);
