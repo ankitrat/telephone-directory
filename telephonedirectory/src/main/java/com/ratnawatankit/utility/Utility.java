@@ -10,7 +10,7 @@ public class Utility {
     }
 
     public static void appendToFile(String record) throws IOException {
-        File file = new File ("directory.csv");
+        File file = new File (Constants.DIRECTORY_PATH);
         boolean isFileExist = true;
         if (!file.exists()) {
             isFileExist = false;
@@ -24,7 +24,7 @@ public class Utility {
             bw.flush();
         } catch (IOException ex) {
             ex.printStackTrace();
-            throw new IOException("Exception occured while writing new record to system" + ex.getMessage());
+            throw new IOException("Exception occured while writing new record to system." + ex.getMessage());
         }
 
     }
