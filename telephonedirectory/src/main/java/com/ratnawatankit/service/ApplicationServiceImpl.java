@@ -12,9 +12,10 @@ public class ApplicationServiceImpl implements ApplicationService {
         companyName = companyName.isEmpty() ? null : companyName.trim();
         phone = phone.isEmpty() ? null : phone.trim();
         email = email.isEmpty() ? null : email.trim();
-//        Integer id = TelPhoneDirectory.list.size() + 1;
-        String record = "2" + "," + fullName + "," + companyName + "," + phone + "," + email;
+        Integer id = TelPhoneDirectory.list == null ? 1 : TelPhoneDirectory.list.size() + 1;
+        String record = id + "," + fullName + "," + companyName + "," + phone + "," + email;
         Utility.appendToFile(record);
         Directory dir = new Directory(fullName, companyName, phone, email);
+        TelPhoneDirectory.insertContact(dir);
     }
 }
